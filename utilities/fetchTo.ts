@@ -52,4 +52,4 @@ export async function genericPostTo<T>(path: string, body: object): Promise<Payl
         console.log("RETURNING STRUCTURE")
         return returnStructure
     }
-}
+};

@@ -1,28 +1,48 @@
 'use client'
+import { PlayGroundProps } from '@/app/interfaces/playgroundInterfaces';
+import { genericPostTo } from '@/utilities/fetchTo';
 import React, { useEffect, useState } from 'react'
+import { AvailableComponent } from './Available';
 
-interface PlayGroundProps{
-  available: Promise<Boolean>
-}
-function PlayGround({available}: PlayGroundProps){
+function PlayGround({isAvailableAndHasGameStarted, playgroundId}: PlayGroundProps){
   const [isPlayegroundAvailable, setIsPlayegroundAvailable] = useState<Boolean>(false);
-  const getPLaygroundAvailability = async () => {
-      const availableAwaited = await available;
-      setIsPlayegroundAvailable(availableAwaited);
-  }
-  useEffect(() => {
-   getPLaygroundAvailability()
-  }, [])
+  const [hasGameStarted, setHasGameStarted] = useState<Boolean>(false);
 
-  return (
-    <div>
-      {isPlayegroundAvailable ? (
-        <h1>Bueno vamo' a juga'</h1>
-      ):
-        <h1>Andá a lavarte las tetas este canal ya está ocupado o falló algo</h1>
-}
-    </div>
-  )
+
+  const getPLaygroundAvailability = async () => {
+      const {available, startingGame} = await isAvailableAndHasGameStarted;
+      setIsPlayegroundAvailable(available);
+      setHasGameStarted(startingGame)
+  };
+
+  const handleAfterUnload = async(event: BeforeUnloadEvent) => {
+    //Clear playgroundId from table
+    await genericPostTo('delete-playground', {
+    'pageId': playgroundId
+  })
+  };
+
+
+  useEffect(() => {
+    getPLaygroundAvailability();
+    window.addEventListener('beforeunload', handleAfterUnload);
+    // window.addEventListener('popstate', handleAfterUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleAfterUnload);
+    };
+  }, []);
+  useEffect(() => {
+    console.log("CHECK VARIABLES", isPlayegroundAvailable, hasGameStarted)
+  },[isPlayegroundAvailable, hasGameStarted])
+
+  
+      if (isPlayegroundAvailable) return  (
+       <AvailableComponent hasGameStarted={hasGameStarted}/>
+      )
+      else return (
+        <div>Anda pa'ya bobo</div>
+      )
+  
 }
 
 

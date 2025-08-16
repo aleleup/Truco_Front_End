@@ -1,23 +1,21 @@
 import React from 'react'
 import { genericPostTo, Payload } from '@/utilities/fetchTo'
 import PlayGround from './components/Playground';
-
-interface isAvailableInterface{
-  available: Boolean
-}
+import { isAvailableInterface } from '../interfaces/playgroundInterfaces';
 
 interface playgroundProps{
   searchParams: {
     pgid: string
   }
 }
-const seePlaygroundStatus = async(id:number): Promise<Boolean> => {
-    const data:  Payload<isAvailableInterface> = await genericPostTo('check_page_availability', {
+const seePlaygroundStatus = async(id:number): Promise<isAvailableInterface> => {
+    const data:  Payload<isAvailableInterface> = await genericPostTo('check_playground_availability', {
       pageId: id
     });
-    if (data.error) return false
-    const {available} = data.payload;
-    return available
+    if (data.error) return {available: false, startingGame:false }
+    const {available, startingGame} = data.payload;
+    
+    return {available, startingGame}
   };
 
  function PlayerPlayGround({searchParams}: playgroundProps){
@@ -27,7 +25,7 @@ const seePlaygroundStatus = async(id:number): Promise<Boolean> => {
 
   return (
     <div>
-      <PlayGround available={promise}/>
+      <PlayGround isAvailableAndHasGameStarted={promise} playgroundId={playgroundId}/>
     </div>
   )
 }
