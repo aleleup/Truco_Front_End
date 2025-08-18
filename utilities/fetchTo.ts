@@ -1,3 +1,5 @@
+import { wsActionsInterface } from "@/app/interfaces/playgroundInterfaces";
+
 export interface Payload<T> {
     error: boolean,
     payload: T
@@ -53,3 +55,33 @@ export async function genericPostTo<T>(path: string, body: object): Promise<Payl
         return returnStructure
     }
 };
+
+
+
+export async function genericSubscribeToWebSocketChannel(path: string, ): Promise<wsActionsInterface> {
+    const ws = new WebSocket(`${process.env.NEXT_PUBLIC_ENDPOINT}/show_cards`);
+    const wsActions: wsActionsInterface = {
+        onOpen: ws.onopen = (event: any) => {
+        console.log("Conexión WebSocket establecida.");
+            ws.send(event);
+        },
+
+        onMessage: ws.onmessage = (event) => {
+            console.log("Mensaje recibido del servidor:", event.data);
+            return event.data
+        },
+
+        onClose: ws.onclose = (event) => {
+            console.log("Conexión WebSocket cerrada.");
+        },
+
+        onError: ws.onerror = (error) => {
+            console.error("Error en WebSocket:", error);
+        },
+
+        sendMessage: (event) => {
+            ws.send(event)
+        }
+    };
+    return wsActions
+    }
