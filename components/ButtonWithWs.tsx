@@ -1,13 +1,41 @@
 'use client'
-import React, { useState } from 'react';
-import { buttonWithWsProps } from '@/app/interfaces/componentsInterfaces';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { buttonWithWsProps } from '@/app/interfaces/propsInterfaces';
+import { gameEntrance } from '@/app/interfaces/hooksInterfaces';
+
+import { useWebSocket } from '@/hooks/useWebSocket';
+import { useIdStore } from '@/hooks/useIdStore';
 
 export const ButtonWithWs = ({isButtonEnabled, setIsButtonEnabled}: buttonWithWsProps) => {
     const [titleButton, setTitleButton] = useState<String>("Empezar Juego");
-      const connectToWs = () => {
+    const [url, setUrl] = useState<string>('');
+    const {lastMessage} = useWebSocket(url)
+
+    const router = useRouter();
+    const {setNewId} = useIdStore();
+    
+    const connectToWs = () => {
         setTitleButton("Conectandose...")
         setIsButtonEnabled(false)
+        setUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/enter-lobby/${Math.random()}`)
     }
+
+    useEffect(() => {
+        if (!lastMessage) return;
+        if ('new_id' in lastMessage){
+            setNewId(lastMessage.new_id)
+        }
+        if ('allow_access' in lastMessage){
+            const allowAccess = lastMessage.allow_access;
+            if (allowAccess){
+                setTitleButton("Arrancando juego...")
+                setTimeout(() => router.push("/playground"), 3000)
+        }
+    }
+
+    },[lastMessage])
     return (
         <button
             onClick={connectToWs}
