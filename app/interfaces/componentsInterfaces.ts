@@ -1,0 +1,1 @@
+export interface buttonWithWsProps {isButtonEnabled: boolean, setIsButtonEnabled: Function}
