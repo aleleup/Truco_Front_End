@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { buttonWithWsProps } from '@/app/interfaces/propsInterfaces';
-import { gameEntrance } from '@/app/interfaces/hooksInterfaces';
 
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { useIdStore } from '@/hooks/useIdStore';

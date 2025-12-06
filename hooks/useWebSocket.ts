@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useWebSockeInterface, gameEntrance } from "@/app/interfaces/hooksInterfaces";
+import { useWebSockeInterface } from "@/app/interfaces/hooksInterfaces";
+import { gameEntrance } from "@/app/interfaces/gameEntranceInterfaces";
 
 export function useWebSocket(url: string): useWebSockeInterface {
     const wsRef = useRef<WebSocket | null>(null);
