@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { buttonWithWsProps } from '@/app/interfaces/propsInterfaces';
@@ -10,10 +10,10 @@ import { useIdStore } from '@/hooks/useIdStore';
 export const ButtonWithWs = ({isButtonEnabled, setIsButtonEnabled}: buttonWithWsProps) => {
     const [titleButton, setTitleButton] = useState<String>("Empezar Juego");
     const [url, setUrl] = useState<string>('');
-    const {lastMessage} = useWebSocket(url)
+    const {messages} = useWebSocket(url)
 
     const router = useRouter();
-    const {setNewId} = useIdStore();
+    const {id, setNewId} = useIdStore();
     
     const connectToWs = () => {
         setTitleButton("Conectandose...")
@@ -22,19 +22,23 @@ export const ButtonWithWs = ({isButtonEnabled, setIsButtonEnabled}: buttonWithWs
     }
 
     useEffect(() => {
-        if (!lastMessage) return;
-        if ('new_id' in lastMessage){
-            setNewId(lastMessage.new_id)
-        }
-        if ('allow_access' in lastMessage){
-            const allowAccess = lastMessage.allow_access;
-            if (allowAccess){
-                setTitleButton("Arrancando juego...")
-                setTimeout(() => router.push("/playground"), 3000)
-        }
-    }
+        /*
+        messages EXPECTED: [{new_id: int}, {allow_access: bool}].
+        THIS IS HOW IT IS EXPECTED TO BE.
+        */
+        if (!messages.length) return;
+        messages.forEach((msg) => {
+            if (!msg) return;
+            if ("new_id" in msg) {
+            setNewId(msg.new_id);
+            } else if ("allow_access" in msg && msg.allow_access) {
+                setTitleButton("Arrancando juego...");
+                setTimeout(() => router.push("/playground"), (id === 1 ? 4000 : 2000));
+            }
+    })
+    }, [messages]);
 
-    },[lastMessage])
+    useEffect(() =>{ console.log(id) },[id])
     return (
         <button
             onClick={connectToWs}

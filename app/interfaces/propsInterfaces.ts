@@ -1,6 +1,6 @@
 export interface buttonWithWsProps {
     isButtonEnabled: boolean,
-    setIsButtonEnabled: () => void
+    setIsButtonEnabled: (b: boolean) => void
     };
 export interface ActionModalProps {
   buttonsArray: string[],

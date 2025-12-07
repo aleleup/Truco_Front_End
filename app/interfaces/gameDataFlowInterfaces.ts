@@ -1,10 +1,5 @@
-export type gameEntrance = PlayerStatus | PlayersAction | AuthorizationToPlay | IdAssignation | null
-// export interface gameEntrance{
-//     bet: Array<String>,
-//     card_index: number,
-//     allow_access: boolean,
-//     new_id: number
-// }
+export type gameDataFlow = PlayerStatus | PlayersAction | AuthorizationToPlay | IdAssignation | null
+
 export interface PlayersAction {
     bet: Array<String>,
     card_index: number

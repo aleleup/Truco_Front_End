@@ -2,11 +2,15 @@
 
 import { useIdStore } from '@/hooks/useIdStore';
 import React, {useEffect, useState} from 'react';
-import { PlayerOptions, PlayersAction } from '../interfaces/gameEntranceInterfaces';
+import { PlayerOptions, PlayersAction } from '../interfaces/gameDataFlowInterfaces';
 import ActionModal from './components/ActionModal';
+import { useWebSocket } from '@/hooks/useWebSocket';
 
 function PlayGround() {
   const { id } = useIdStore();
+  const [url, setUrl] = useState<string>('');
+  
+  const {messages, send} = useWebSocket(url)
   const [playersCards, setPlayersCards] = useState<Array<string>>([]);
   const [playerOptions, setPlayerOptions] = useState<PlayerOptions | null>(null);
   const [cardSelected, setCardSelected] = useState<number>(-1);
@@ -15,22 +19,23 @@ function PlayGround() {
   const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true);
   const [openModal, setOpenModal] = useState<boolean>(false);
 
-  // MOCK-UP DATA
+  //WEB-SOCKET lastMessage MANAGEMENT:
   useEffect(() => {
-    setPlayersCards(["1 🗡️", " 1 🪾", "7 🗡️"]);
-    setPlayerOptions({
-      Envido: {
-        0: "Envido",
-        1: "Real Envido",
-        2: "Falta Envido"
-      },
-      Truco: "Truco",
-      Respuesta: {
-        0: "Quiero",
-        1: "No Quiero"
-      }
-    })
-  }, []);
+    if (!messages.length) return;    
+    const lastMessage = messages.at(-1)!;
+
+    if ('cards' in lastMessage){
+      setPlayersCards(lastMessage.cards.map(card => card.name));
+    };
+    if ('options' in lastMessage){
+      setPlayerOptions(lastMessage.options)
+    }
+    if ('is_player_turn' in lastMessage){
+      setIsPlayerTurn(lastMessage.is_player_turn);
+    }
+  },[messages]);
+
+  useEffect(() => {setUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/playground/${id}`)}, [url])
 
   function typedKeys<T extends object>(obj: T): (keyof T)[] {
     return Object.keys(obj) as (keyof T)[];
@@ -61,15 +66,21 @@ function PlayGround() {
       card_index: cardSelected
     }
   }
-
+  // SEND PLAYERS PLAY
   useEffect(() => {
-    console.log(" Final MESSAGE: ", setMessageToServer());
-
+    const messageToServer = setMessageToServer()
+    console.log(messageToServer)
+    send(messageToServer)
+    setCardSelected(-1)
   }, [cardSelected]);
 
   useEffect(() => {  
-    console.log(" Final MESSAGE: ", setMessageToServer());
-
+    const messageToServer = setMessageToServer()
+    console.log(messageToServer)
+    send(messageToServer);
+    setBetSelected(''),
+    setOptionSelected(null);
+    
  }, [betSelected]);
 
   return (

@@ -1,9 +1,9 @@
-import { gameEntrance } from "./gameEntranceInterfaces"
+import { gameDataFlow } from "./gameDataFlowInterfaces"
 
 export interface useWebSockeInterface {
     connected: boolean,
-    lastMessage: gameEntrance,
-    send: (data: string) => void
+    messages: gameDataFlow[],
+    send: (data: gameDataFlow) => void
 }
 export interface idStoreInterface {
     id: number,
