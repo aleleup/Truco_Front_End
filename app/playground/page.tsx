@@ -18,9 +18,11 @@ function PlayGround() {
   const [betSelected, setBetSelected] = useState<string>("");
   const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [canThrowCards, setCanThrowCards] = useState<boolean>(true);
 
   //WEB-SOCKET lastMessage MANAGEMENT:
   useEffect(() => {
+    console.log(messages)
     if (!messages.length) return;    
     const lastMessage = messages.at(-1)!;
 
@@ -32,6 +34,9 @@ function PlayGround() {
     }
     if ('is_player_turn' in lastMessage){
       setIsPlayerTurn(lastMessage.is_player_turn);
+    }
+    if ('can_throw_cards' in lastMessage){
+      setCanThrowCards(lastMessage.can_throw_cards)
     }
   },[messages]);
 
@@ -46,13 +51,13 @@ function PlayGround() {
     setOpenModal(false);
   }
 
-  function createButtonsArray<T extends keyof PlayerOptions | null>(optionSelected: T): string[]{
-    if (!playerOptions || !optionSelected ) return [];
-    const selected = playerOptions[optionSelected];
-    if (typeof selected === "string") return [selected];
-    if (!selected) return [];
-    return Object.values(selected);
-  };
+  // function createButtonsArray<T extends keyof PlayerOptions | null>(optionSelected: T): string[]{
+  //   if (!playerOptions || !optionSelected ) return [];
+  //   const selected = playerOptions[optionSelected];
+  //   if (typeof selected === "string") return [selected];
+  //   if (!selected) return [];
+  //   return Object.values(selected);
+  // };
 
   function setBetAndCloseModal(bet:string):void{
     setBetSelected(bet);
@@ -66,28 +71,38 @@ function PlayGround() {
       card_index: cardSelected
     }
   }
+
+  // const optionSelectedIsAnArrayOfStrings = (): boolean => playerOptions != null && optionSelected != null && playerOptions[optionSelected]?.length && typeof playerOptions[optionSelected] === 'object'
+    
   // SEND PLAYERS PLAY
   useEffect(() => {
-    const messageToServer = setMessageToServer()
-    console.log(messageToServer)
-    send(messageToServer)
-    setCardSelected(-1)
+    if (cardSelected !== -1){
+      const messageToServer = setMessageToServer()
+      console.log(messageToServer)
+      send(messageToServer)
+      setCardSelected(-1)
+  }
   }, [cardSelected]);
 
   useEffect(() => {  
+    if (optionSelected !== null && betSelected.length){
     const messageToServer = setMessageToServer()
     console.log(messageToServer)
     send(messageToServer);
     setBetSelected(''),
     setOptionSelected(null);
-    
+  }
  }, [betSelected]);
+
 
   return (
     <main className="min-h-screen flex flex-col bg-[var(--color-primary)] text-white p-4">
       {/* MODAL */}
 
-      {openModal && <ActionModal onClose={closeModal } buttonsArray={createButtonsArray(optionSelected)} setBet={setBetAndCloseModal}/>}
+      { playerOptions != null && optionSelected != null &&
+      playerOptions[optionSelected]?.length && 
+      typeof playerOptions[optionSelected] === 'object' && openModal && 
+      <ActionModal onClose={closeModal } buttonsArray={playerOptions[optionSelected]} setBet={setBetAndCloseModal}/>}
 
       {/* Zona superior (mesa / estado del juego) */}
       <section className="flex-1 flex items-center justify-center">
@@ -104,7 +119,7 @@ function PlayGround() {
           {playersCards.length && playersCards.map((card, i) => (
               <button key={i} 
                 onClick={() => setCardSelected(i)}
-                disabled={!isPlayerTurn} 
+                disabled={!(isPlayerTurn && canThrowCards)} 
                 className="disabled:bg-gray-400 bg-[var(--color-secondary)] py-4 rounded-xl text-xl font-bold shadow-md active:scale-95 transition"
                 >
                 {card}

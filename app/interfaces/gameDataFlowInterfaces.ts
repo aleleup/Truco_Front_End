@@ -17,7 +17,7 @@ interface PlayerStatus{
     options: PlayerOptions,
     envido: number,
     is_player_turn: boolean,
-
+    can_throw_cards: boolean
 }
 
 interface Card{
@@ -28,7 +28,7 @@ interface Card{
 }
 
 export interface PlayerOptions{
-    Respuesta?: Record<number, string>,
+    Respuesta?: Array<string>,
     Truco: string,
-    Envido?: Record<number, string>
+    Envido: Array<string>
 }
