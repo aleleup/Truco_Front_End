@@ -1,4 +1,4 @@
-export type gameDataFlow = PlayerStatus | PlayersAction | AuthorizationToPlay | IdAssignation | null
+export type gameDataFlow = PlayerStatus | GeneralPublicData | PlayersAction | AuthorizationToPlay | IdAssignation | null
 
 export interface PlayersAction {
     bet: Array<String>,
@@ -20,15 +20,27 @@ interface PlayerStatus{
     can_throw_cards: boolean
 }
 
-interface Card{
+export interface Card{
     name: string,
     value: number,
     type: string,
-    envido_value: number
+    envido_value: number,
+    ascii_art: string
 }
 
 export interface PlayerOptions{
     Respuesta?: Array<string>,
     Truco: string,
     Envido: Array<string>
+}
+
+interface GeneralPublicData {
+    game_over: boolean,
+    players_public_data: Array<PublicPlayersData>
+}
+
+export interface PublicPlayersData {
+    last_bet: string,
+    cards_on_desk: Array<Card>,
+    points: number
 }

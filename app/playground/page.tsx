@@ -2,15 +2,18 @@
 
 import { useIdStore } from '@/hooks/useIdStore';
 import React, {useEffect, useState} from 'react';
-import { PlayerOptions, PlayersAction } from '../interfaces/gameDataFlowInterfaces';
+import { PlayerOptions, PlayersAction, PublicPlayersData } from '../interfaces/gameDataFlowInterfaces';
 import ActionModal from './components/ActionModal';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { MessageLogger } from './components/MessageLogger';
+import { CardsOnTheDesk } from './components/CardsOnTheDesk';
 
 function PlayGround() {
   const { id } = useIdStore();
-  const [url, setUrl] = useState<string>('');
   
-  const {messages, send} = useWebSocket(url)
+  //PLAYERS ACTIONS STATES
+  const [playersActionUrl, setPlayersActionUrl] = useState<string>('');
+  const {messages: playersActionsMessages, send: sendPlayersActions} = useWebSocket(playersActionUrl)
   const [playersCards, setPlayersCards] = useState<Array<string>>([]);
   const [playerOptions, setPlayerOptions] = useState<PlayerOptions | null>(null);
   const [cardSelected, setCardSelected] = useState<number>(-1);
@@ -19,12 +22,20 @@ function PlayGround() {
   const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [canThrowCards, setCanThrowCards] = useState<boolean>(true);
+  
+  //PUBLIC VIEW STATES
+  const [publicViewUrl, setPublicViewUrl] = useState<string>('');
+  const [isGameOver, setIsGameOver] = useState<boolean>(false)
+  const {messages: publicMessages} = useWebSocket(publicViewUrl)
+  const [ownPublicData, setOwnPublicData] = useState<PublicPlayersData | null>(null)
+  const [opponentPublicData, setOpponentPublicData] = useState<PublicPlayersData | null>(null)
 
-  //WEB-SOCKET lastMessage MANAGEMENT:
+
+  //WEB-SOCKET playersActionsMessages MANAGEMENT:
   useEffect(() => {
-    console.log(messages)
-    if (!messages.length) return;    
-    const lastMessage = messages.at(-1)!;
+    if (!playersActionsMessages.length) return;    
+    const lastMessage = playersActionsMessages.at(-1)!;
+    console.log("playersActionsMessages", lastMessage)
 
     if ('cards' in lastMessage){
       setPlayersCards(lastMessage.cards.map(card => card.name));
@@ -38,9 +49,30 @@ function PlayGround() {
     if ('can_throw_cards' in lastMessage){
       setCanThrowCards(lastMessage.can_throw_cards)
     }
-  },[messages]);
+  },[playersActionsMessages]);
 
-  useEffect(() => {setUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/playground/${id}`)}, [url])
+  //WEB-SOCKET publicMessages MANAGEMENT:
+  useEffect(() => {
+    if (!publicMessages.length) return;    
+    const lastMessage = publicMessages.at(-1)!;
+    console.log("publicMessages", lastMessage)
+
+    if ('game_over' in lastMessage){
+      setIsGameOver(lastMessage.game_over);
+    }
+    if ('players_public_data' in lastMessage){
+      console.log("setOwnPublicData, setOpponentPublicData")
+      setOwnPublicData(lastMessage.players_public_data[id])
+      setOpponentPublicData(lastMessage.players_public_data[(id + 1) % 2 ])
+    }
+    
+  },[publicMessages]);
+
+  useEffect(() => {
+      if (id === -1) return;
+      setPublicViewUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/public-view/${id}`)
+      setPlayersActionUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/playground/${id}`)
+  }, [id]);
 
   function typedKeys<T extends object>(obj: T): (keyof T)[] {
     return Object.keys(obj) as (keyof T)[];
@@ -50,15 +82,6 @@ function PlayGround() {
     setOptionSelected(null);
     setOpenModal(false);
   }
-
-  // function createButtonsArray<T extends keyof PlayerOptions | null>(optionSelected: T): string[]{
-  //   if (!playerOptions || !optionSelected ) return [];
-  //   const selected = playerOptions[optionSelected];
-  //   if (typeof selected === "string") return [selected];
-  //   if (!selected) return [];
-  //   return Object.values(selected);
-  // };
-
   function setBetAndCloseModal(bet:string):void{
     setBetSelected(bet);
     setOpenModal(false);
@@ -79,7 +102,7 @@ function PlayGround() {
     if (cardSelected !== -1){
       const messageToServer = setMessageToServer()
       console.log(messageToServer)
-      send(messageToServer)
+      send: sendPlayersActions(messageToServer)
       setCardSelected(-1)
   }
   }, [cardSelected]);
@@ -88,7 +111,7 @@ function PlayGround() {
     if (optionSelected !== null && betSelected.length){
     const messageToServer = setMessageToServer()
     console.log(messageToServer)
-    send(messageToServer);
+    send: sendPlayersActions(messageToServer);
     setBetSelected(''),
     setOptionSelected(null);
   }
@@ -103,14 +126,18 @@ function PlayGround() {
       playerOptions[optionSelected]?.length && 
       typeof playerOptions[optionSelected] === 'object' && openModal && 
       <ActionModal onClose={closeModal } buttonsArray={playerOptions[optionSelected]} setBet={setBetAndCloseModal}/>}
-
-      {/* Zona superior (mesa / estado del juego) */}
-      <section className="flex-1 flex items-center justify-center">
-        <h2 className="text-2xl font-semibold opacity-80">
-          Bienvenido al playground
-        </h2>
-      </section>
-
+      { !(ownPublicData === null || opponentPublicData === null) && (
+        <>
+        <MessageLogger 
+          ownLastMessage={ownPublicData?.last_bet} 
+          ownPoints={ownPublicData?.points}
+          opponentLastMessage={opponentPublicData?.last_bet}
+          opponentPoints={opponentPublicData?.points}
+        
+        />
+       <CardsOnTheDesk ownCards={ownPublicData?.cards_on_desk} opponentCards={opponentPublicData?.cards_on_desk}/>
+       </>
+       )}
       {/* Zona inferior de botones */}
       <section className="w-full flex flex-col gap-4">
 
