@@ -1,5 +1,9 @@
 export type gameDataFlow = PlayerStatus | GeneralPublicData | PlayersAction | AuthorizationToPlay | IdAssignation | null
 
+type CardNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 10 | 11 | 12
+type CardType = "sword" | "wood" | "cup" | "gold"
+
+
 export interface PlayersAction {
     bet: Array<String>,
     card_index: number
@@ -23,9 +27,9 @@ interface PlayerStatus{
 export interface Card{
     name: string,
     value: number,
-    type: string,
+    type: CardType,
     envido_value: number,
-    ascii_art: string
+    number: CardNumber
 }
 
 export interface PlayerOptions{
@@ -44,3 +48,7 @@ export interface PublicPlayersData {
     cards_on_desk: Array<Card>,
     points: number
 }
+
+
+
+export type CardKey = `${CardNumber}&${CardType}`
