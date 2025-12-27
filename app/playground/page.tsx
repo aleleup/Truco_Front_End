@@ -13,7 +13,7 @@ function PlayGround() {
   
   //PLAYERS ACTIONS STATES
   const [playersActionUrl, setPlayersActionUrl] = useState<string>('');
-  const {messages: playersActionsMessages, send: sendPlayersActions} = useWebSocket(playersActionUrl)
+  const {messages: playersActionsMessages, send: sendPlayersActions, clearMessages: clearActionsMessages} = useWebSocket(playersActionUrl)
   const [playersCards, setPlayersCards] = useState<Array<string>>([]);
   const [playerOptions, setPlayerOptions] = useState<PlayerOptions | null>(null);
   const [cardSelected, setCardSelected] = useState<number>(-1);
@@ -26,13 +26,15 @@ function PlayGround() {
   //PUBLIC VIEW STATES
   const [publicViewUrl, setPublicViewUrl] = useState<string>('');
   const [isGameOver, setIsGameOver] = useState<boolean>(false)
-  const {messages: publicMessages} = useWebSocket(publicViewUrl)
+  const {messages: publicMessages, clearMessages: clearPublicMessages} = useWebSocket(publicViewUrl)
   const [ownPublicData, setOwnPublicData] = useState<PublicPlayersData | null>(null)
   const [opponentPublicData, setOpponentPublicData] = useState<PublicPlayersData | null>(null)
-
-
+  const [currentRound, setCurrentRound] = useState<number>(0);
+  const [roundWinner, setRoundWinner] = useState<number>(0);
+  const ABANDON = "Mazo"
   //WEB-SOCKET playersActionsMessages MANAGEMENT:
   useEffect(() => {
+    console.log("DEBBUG", playersActionsMessages)
     if (!playersActionsMessages.length) return;    
     const lastMessage = playersActionsMessages.at(-1)!;
     console.log("playersActionsMessages", lastMessage)
@@ -50,12 +52,30 @@ function PlayGround() {
       setCanThrowCards(lastMessage.can_throw_cards)
     }
   },[playersActionsMessages]);
+  
+  // const inEnvido = ():boolean => {
+  //   const envidoCalls = ["Envido", "Real Envido", "Falta Envido"]
+  //   return (ownPublicData?.last_bet)
+  // }
+  
 
+  const disableButton = (option: keyof PlayerOptions): boolean => (
+    !isPlayerTurn ||  (!!playerOptions && !playerOptions[option]?.length)
+  )
   //WEB-SOCKET publicMessages MANAGEMENT:
   useEffect(() => {
     if (!publicMessages.length) return;    
     const lastMessage = publicMessages.at(-1)!;
     console.log("publicMessages", lastMessage)
+
+
+    if ('round' in lastMessage){
+      if (lastMessage.round > currentRound){
+        setCurrentRound(lastMessage.round);
+        setOwnPublicData(null);
+        setOpponentPublicData(null);
+      }
+    }
 
     if ('game_over' in lastMessage){
       setIsGameOver(lastMessage.game_over);
@@ -65,7 +85,12 @@ function PlayGround() {
       setOwnPublicData(lastMessage.players_public_data[id])
       setOpponentPublicData(lastMessage.players_public_data[(id + 1) % 2 ])
     }
-    
+
+    if ('round_winner' in lastMessage && lastMessage.round_winner != -1) {
+      clearPublicMessages();
+      clearActionsMessages();
+    }
+
   },[publicMessages]);
 
   useEffect(() => {
@@ -117,7 +142,6 @@ function PlayGround() {
   }
  }, [betSelected]);
 
-
   return (
     <main className="min-h-screen flex flex-col bg-[var(--color-primary)] text-white p-4">
       {/* MODAL */}
@@ -164,13 +188,13 @@ function PlayGround() {
               }
               }
               key={i}
-              disabled={!isPlayerTurn} 
-              className="disabled:bg-gray-400 bg-blue-600 py-5 rounded-xl text-xl font-extrabold shadow-lg active:scale-95 transition">
+              disabled={disableButton(option)} 
+              className={`disabled:bg-gray-400 ${option === "Mazo" ? "bg-red-600": "bg-blue-600"} py-5 rounded-xl text-xl font-extrabold shadow-lg active:scale-95 transition`}
+              >
             {option}
           </button>
           )) }
         </div>
-       
       </section>
     </main>
   );

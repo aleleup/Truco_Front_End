@@ -31,6 +31,12 @@ export const CardsOnTheDesk = ({ownCards, opponentCards}: CardsOnTheDeskProps) =
                 </pre>
                 )
             })}
+
+            {/* {Object.values(cardAsciiStorage).map((card, i)=> 
+                <pre key={i} className="text-gray-300">
+                    {card}
+                </pre>
+            )} */}
             </div>
 
         </div>

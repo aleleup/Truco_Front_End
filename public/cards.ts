@@ -12,13 +12,12 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 
 '1&sword': `
 ┌──────────┐
-│ 1${S}      │
+│ 1        │
 │    /\\    │
 │   /  \\   │
-│    ||    │
-│    ||    │
-│    ||    │
-│       1${S}│
+│   |  |   │
+│  _|__|_  │
+│    || ${S} │
 └──────────┘
 `
 ,
@@ -29,7 +28,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │    ||    │
 │   /||\\   │
 │    ||    │
-│    ||    │
 │       1${W}│
 └──────────┘
 `, 
@@ -37,10 +35,9 @@ export const cardAsciiStorage: Record<CardKey, string> = {
     '7&sword':  `
 ┌──────────┐
 │ 7        │
-│ ${S} ${S} ${S} |
+│  ${S} ${S} ${S} |
 │          │
-│ ${S} ${S} ${S} │
-│          │
+│  ${S} ${S} ${S} │
 │    ${S}    │
 │        7 │
 └──────────┘
@@ -48,10 +45,9 @@ export const cardAsciiStorage: Record<CardKey, string> = {
     '7&gold': `
 ┌──────────┐
 │ 7        │
-│ ${G} ${G} ${G} |
+│ ${G} ${G} ${G}  |
 │          │
-│ ${G} ${G} ${G} │
-│          │
+│ ${G} ${G} ${G}  │
 │    ${G}    │
 │        7 │
 └──────────┘
@@ -61,9 +57,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 3${S}      │
 │          │
-│ ${S} ${S} ${S} │
 │          │
-│          │
+│ ${S} ${S} ${S}  │
 │          │
 │      3${S} │
 └──────────┘
@@ -72,33 +67,30 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 3${W}      │
 │          │
-│ ${W} ${W} ${W} │
 │          │
-│          │
+│ ${W} ${W} ${W}  │
 │          │
 │      3${W} │
 └──────────┘
 `, 
     '3&cup': `
 ┌──────────┐
-│ 3 ${C}     │
+│ 3${C}      │
 │          │
 │          │
-│ ${C} ${C} ${C} │
+│ ${C} ${C} ${C}  │
 │          │
-│          │
-│     3 ${C} │
+│      3${C} │
 └──────────┘
 `, 
     '3&gold': `
 ┌──────────┐
-│ 3 ${G}     │
+│ 3${G}      │
 │          │
 │          │
-│ ${G} ${G} ${G} │
+│ ${G} ${G} ${G}  │
 │          │
-│          │
-│     3 ${G} │
+│      3${G} │
 └──────────┘
 `,
 
@@ -107,8 +99,7 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ 2${S}      │
 │          │
 │          │
-│  ${S}  ${S}  │
-│          │
+│  ${S}  ${S}   │
 │          │
 │       2${S}│
 └──────────┘
@@ -118,8 +109,7 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ 2${W}      │
 │          │
 │          │
-│  ${W}  ${W}  │
-│          │
+│  ${W}  ${W}   │
 │          │
 │       2${W}│
 └──────────┘
@@ -129,8 +119,7 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ 2${C}      │
 │          │
 │          │
-│  ${C}  ${C}  │
-│          │
+│  ${C}  ${C}   │
 │          │
 │       2${C}│
 └──────────┘
@@ -140,8 +129,7 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ 2${G}      │
 │          │
 │          │
-│  ${G}  ${G}  │
-│          │
+│  ${G}  ${G}   │
 │          │
 │       2${G}│
 └──────────┘
@@ -154,7 +142,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │   ╭──╮   │
 │  (____)  │
 │    ||    │
-│    ||    │
 │   ====   │
 │      1${C} │
 └──────────┘
@@ -164,7 +151,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ 1 ${G}     │
 │  ┌────┐  │
 │ │  /|  │ │
-│ │   |  │ │
 │ │   |  │ │
 │  └────┘  │
 │     1 ${G} │
@@ -179,7 +165,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │   (•_•)  │
 │   /|█|\\  │
 │    / \\   │
-│    REY   │
 │    12 ${S} │
 └──────────┘
 `, 
@@ -190,7 +175,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │   (•_•)  │
 │   /|█|\\  │
 │    / \\   │
-│    REY   │
 │    12 ${W} │
 └──────────┘
 `, 
@@ -201,7 +185,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │   (•_•)  │
 │   /|█|\\  │
 │    / \\   │
-│    REY   │
 │    12 ${C} │
 └──────────┘
 `, 
@@ -212,7 +195,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │   (•_•)  │
 │   /|█|\\  │
 │    / \\   │
-│    REY   │
 │    12 ${G} │
 └──────────┘
 `, 
@@ -224,7 +206,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ // ^ ^ \\ │
 │(||  - ||)│
 │  \\____// │
-│ CABALLO  │
 │    11 ${S} │
 └──────────┘
 `, 
@@ -235,7 +216,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ // ^ ^ \\ │
 │(||  - ||)│
 │  \\____// │
-│ CABALLO  │
 │    11 ${W} │
 └──────────┘
 `, 
@@ -246,7 +226,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ // ^ ^ \\ │
 │(||  - ||)│
 │  \\____// │
-│ CABALLO  │
 │    11 ${C} │
 └──────────┘
 `, 
@@ -257,7 +236,6 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 │ // ^ ^ \\ │
 │(||  - ||)│
 │  \\____// │
-│ CABALLO  │
 │    11 ${G} │
 └──────────┘
 `, 
@@ -265,44 +243,40 @@ export const cardAsciiStorage: Record<CardKey, string> = {
     '10&sword': `
 ┌──────────┐
 │ 10 ${S}    │
+│          │
 │   (•‿•)  │
 │    /|\\   │
 │    / \\   │
-│   SOTA   │
-│          │
 │    10 ${S} │
 └──────────┘
 `, 
     '10&wood':`
 ┌──────────┐
 │ 10 ${W}    │
+│          │
 │   (•‿•)  │
 │    /|\\   │
 │    / \\   │
-│   SOTA   │
-│          │
 │    10 ${W} │
 └──────────┘
 `, 
     '10&cup': `
 ┌──────────┐
 │ 10 ${C}    │
+│          │
 │   (•‿•)  │
 │    /|\\   │
 │    / \\   │
-│   SOTA   │
-│          │
 │    10 ${C} │
 └──────────┘
 `, 
     '10&gold': `
 ┌──────────┐
 │ 10 ${G}    │
+│          │
 │   (•‿•)  │
 │    /|\\   │
 │    / \\   │
-│   SOTA   │
-│          │
 │    10 ${G} │
 └──────────┘
 `,
@@ -310,22 +284,20 @@ export const cardAsciiStorage: Record<CardKey, string> = {
     '7&wood': `
 ┌──────────┐
 │ 7        │
-│ ${W} ${W} ${W} │
+│  ${W} ${W} ${W} |
 │          │
-│ ${W} ${W} ${W} │
-│          │
-│    ${W}    │
+│  ${W} ${W} ${W} │
+│     ${W}   │
 │        7 │
 └──────────┘
 `, 
     '7&cup': `
 ┌──────────┐
 │ 7        │
-│ ${C} ${C} ${C} |
+│  ${C} ${C} ${C} |
 │          │
-│ ${C} ${C} ${C} │
-│          │
-│    ${C}    │
+│  ${C} ${C} ${C} │
+│     ${C}   │
 │        7 │
 └──────────┘
 `, 
@@ -334,8 +306,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 6 ${S}     │
 │          │
-│ ${S} ${S} ${S} │
-│ ${S} ${S} ${S} │
+│  ${S} ${S} ${S} │
+│  ${S} ${S} ${S} │
 │          │
 │     6 ${S} │
 └──────────┘
@@ -344,8 +316,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 6 ${W}     │
 │          │
-│ ${W} ${W} ${W} │
-│ ${W} ${W} ${W} │
+│  ${W} ${W} ${W} │
+│  ${W} ${W} ${W} │
 │          │
 │     6 ${W} │
 └──────────┘
@@ -354,8 +326,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 6 ${C}     │
 │          │
-│ ${C} ${C} ${C} │
-│ ${C} ${C} ${C} │
+│  ${C} ${C} ${C} │
+│  ${C} ${C} ${C} │
 │          │
 │     6 ${C} │
 └──────────┘
@@ -364,8 +336,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 6 ${G}     │
 │          │
-│ ${G} ${G} ${G} │
-│ ${G} ${G} ${G} │
+│  ${G} ${G} ${G} │
+│  ${G} ${G} ${G} │
 │          │
 │     6 ${G} │
 └──────────┘
@@ -375,8 +347,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 5 ${S}     │
 │          │
-│   ${S}  ${S} │
-│ ${S} ${S} ${S} │
+│    ${S} ${S}  │
+│  ${S} ${S} ${S} │
 │          │
 │      5 ${S}│
 └──────────┘
@@ -385,8 +357,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 5 ${W}     │
 │          │
-│   ${W}  ${W} │
-│ ${W} ${W} ${W} │
+│    ${W} ${W}  │
+│  ${W} ${W} ${W} │
 │          │
 │      5 ${W}│
 └──────────┘
@@ -395,8 +367,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 5 ${C}     │
 │          │
-│   ${C}  ${C} │
-│ ${C} ${C} ${C} │
+│    ${C} ${C}  │
+│  ${C} ${C} ${C} │
 │          │
 │      5 ${C}│
 └──────────┘
@@ -405,8 +377,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 5 ${G}     │
 │          │
-│   ${G}  ${G} │
-│ ${G} ${G} ${G} │
+│    ${G} ${G}  │
+│  ${G} ${G} ${G} │
 │          │
 │      5 ${G}│
 └──────────┘
@@ -416,8 +388,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 4 ${S}     │
 │          │
-│  ${S}  ${S}  │
-│  ${S}  ${S}  │
+│   ${S}  ${S}  │
+│   ${S}  ${S}  │
 │          │
 │     4 ${S} │
 └──────────┘
@@ -426,8 +398,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 4 ${W}     │
 │          │
-│  ${W}  ${W}  │
-│  ${W}  ${W}  │
+│   ${W}  ${W}  │
+│   ${W}  ${W}  │
 │          │
 │     4 ${W} │
 └──────────┘
@@ -436,8 +408,8 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 4 ${C}     │
 │          │
-│  ${C}  ${C}  │
-│  ${C}  ${C}  │
+│   ${C}  ${C}  │
+│   ${C}  ${C}  │
 │          │
 │     4 ${C} │
 └──────────┘
@@ -446,13 +418,12 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 ┌──────────┐
 │ 4 ${G}     │
 │          │
-│  ${G}  ${G}  │
-│  ${G}  ${G}  │
+│   ${G}  ${G}  │
+│   ${G}  ${G}  │
 │          │
 │     4 ${G} │
 └──────────┘
 `,
 }
 
-console.log(cardAsciiStorage['7&sword'])
 // Object.values(cardAsciiStorage).forEach(card => console.log(cardAsciiStorage));

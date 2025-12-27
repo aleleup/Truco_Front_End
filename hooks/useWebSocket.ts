@@ -28,6 +28,7 @@ export function useWebSocket(url: string): useWebSockeInterface {
         wsRef.current.send(JSON.stringify(data));
     };
 
-    return { connected, messages, send };
+    const clearMessages = () => setMessages(prev => []);
+    return { connected, messages, clearMessages, send };
 
 }

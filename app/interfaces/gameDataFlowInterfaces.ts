@@ -33,14 +33,16 @@ export interface Card{
 }
 
 export interface PlayerOptions{
-    Respuesta?: Array<string>,
+    Mazo?: Array<string>,
     Truco: string,
     Envido: Array<string>
 }
 
 interface GeneralPublicData {
     game_over: boolean,
-    players_public_data: Array<PublicPlayersData>
+    players_public_data: Array<PublicPlayersData>,
+    round: number,
+    round_winner: number
 }
 
 export interface PublicPlayersData {
