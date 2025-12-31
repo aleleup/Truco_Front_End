@@ -4,7 +4,9 @@ export interface useWebSockeInterface {
     connected: boolean,
     messages: gameDataFlow[],
     send: (data: gameDataFlow) => void,
-    clearMessages: () => void
+    clearMessages: () => void,
+    closeSocket: () => void,
+
 
 }
 export interface idStoreInterface {

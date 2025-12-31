@@ -21,7 +21,8 @@ interface PlayerStatus{
     options: PlayerOptions,
     envido: number,
     is_player_turn: boolean,
-    can_throw_cards: boolean
+    can_throw_cards: boolean,
+    has_quiero: boolean
 }
 
 export interface Card{
@@ -39,7 +40,7 @@ export interface PlayerOptions{
 }
 
 interface GeneralPublicData {
-    game_over: boolean,
+    winner_id: number,
     players_public_data: Array<PublicPlayersData>,
     round: number,
     round_winner: number

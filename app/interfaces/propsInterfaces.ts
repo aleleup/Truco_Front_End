@@ -23,3 +23,7 @@ export interface MessageLoggerProps {
   opponentLastMessage: string,
   opponentPoints: number,
 }
+
+export interface WinnerLooserModalProps{
+  hasWinned: boolean;
+};

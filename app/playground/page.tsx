@@ -7,13 +7,21 @@ import ActionModal from './components/ActionModal';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { MessageLogger } from './components/MessageLogger';
 import { CardsOnTheDesk } from './components/CardsOnTheDesk';
+import WinnerLooserModal from './components/WinnerLooserModal';
+import DealingCardsModal from './components/DealingCardsModal';
 
 function PlayGround() {
   const { id } = useIdStore();
   
-  //PLAYERS ACTIONS STATES
+  //PLAYERS Status STATES
   const [playersActionUrl, setPlayersActionUrl] = useState<string>('');
-  const {messages: playersActionsMessages, send: sendPlayersActions, clearMessages: clearActionsMessages} = useWebSocket(playersActionUrl)
+  const {
+    messages: playersStatusMessages, 
+    send: sendPlayersStatus, 
+    clearMessages: clearStatusMessages,
+    closeSocket: closePlayerStatusSocket
+    
+  } = useWebSocket(playersActionUrl)
   const [playersCards, setPlayersCards] = useState<Array<string>>([]);
   const [playerOptions, setPlayerOptions] = useState<PlayerOptions | null>(null);
   const [cardSelected, setCardSelected] = useState<number>(-1);
@@ -22,22 +30,25 @@ function PlayGround() {
   const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [canThrowCards, setCanThrowCards] = useState<boolean>(true);
-  
+  const [hasQuiero, setHasQuiero] = useState<boolean>(true);
   //PUBLIC VIEW STATES
   const [publicViewUrl, setPublicViewUrl] = useState<string>('');
-  const [isGameOver, setIsGameOver] = useState<boolean>(false)
-  const {messages: publicMessages, clearMessages: clearPublicMessages} = useWebSocket(publicViewUrl)
+  const [winnerId, setWinnerId] = useState<number>(-1)
+  const {
+    messages: publicMessages, 
+    clearMessages: clearPublicMessages,
+    closeSocket: closePublicMessageSocket
+} = useWebSocket(publicViewUrl)
   const [ownPublicData, setOwnPublicData] = useState<PublicPlayersData | null>(null)
   const [opponentPublicData, setOpponentPublicData] = useState<PublicPlayersData | null>(null)
   const [currentRound, setCurrentRound] = useState<number>(0);
-  const [roundWinner, setRoundWinner] = useState<number>(0);
-  const ABANDON = "Mazo"
-  //WEB-SOCKET playersActionsMessages MANAGEMENT:
+  const [roundWinner, setRoundWinner] = useState<number>(-1);
+  //WEB-SOCKET playersStatusMessages MANAGEMENT:
   useEffect(() => {
-    console.log("DEBBUG", playersActionsMessages)
-    if (!playersActionsMessages.length) return;    
-    const lastMessage = playersActionsMessages.at(-1)!;
-    console.log("playersActionsMessages", lastMessage)
+    console.log("DEBBUG", playersStatusMessages)
+    if (!playersStatusMessages.length) return;    
+    const lastMessage = playersStatusMessages.at(-1)!;
+    console.log("playersStatusMessages", lastMessage)
 
     if ('cards' in lastMessage){
       setPlayersCards(lastMessage.cards.map(card => card.name));
@@ -51,7 +62,11 @@ function PlayGround() {
     if ('can_throw_cards' in lastMessage){
       setCanThrowCards(lastMessage.can_throw_cards)
     }
-  },[playersActionsMessages]);
+    if ('has_quiero' in lastMessage){
+      setHasQuiero(lastMessage.has_quiero)
+    }
+    
+  },[playersStatusMessages]);
   
   // const inEnvido = ():boolean => {
   //   const envidoCalls = ["Envido", "Real Envido", "Falta Envido"]
@@ -59,15 +74,10 @@ function PlayGround() {
   // }
   
 
-  const disableButton = (option: keyof PlayerOptions): boolean => (
-    !isPlayerTurn ||  (!!playerOptions && !playerOptions[option]?.length)
-  )
   //WEB-SOCKET publicMessages MANAGEMENT:
   useEffect(() => {
     if (!publicMessages.length) return;    
     const lastMessage = publicMessages.at(-1)!;
-    console.log("publicMessages", lastMessage)
-
 
     if ('round' in lastMessage){
       if (lastMessage.round > currentRound){
@@ -77,8 +87,8 @@ function PlayGround() {
       }
     }
 
-    if ('game_over' in lastMessage){
-      setIsGameOver(lastMessage.game_over);
+    if ('winner_id' in lastMessage){
+      setWinnerId(lastMessage.winner_id);
     }
     if ('players_public_data' in lastMessage){
       console.log("setOwnPublicData, setOpponentPublicData")
@@ -86,10 +96,14 @@ function PlayGround() {
       setOpponentPublicData(lastMessage.players_public_data[(id + 1) % 2 ])
     }
 
-    if ('round_winner' in lastMessage && lastMessage.round_winner != -1) {
-      clearPublicMessages();
-      clearActionsMessages();
+    if ('round_winner' in lastMessage) {
+      if (lastMessage.round_winner !== -1){
+        clearPublicMessages();
+        clearStatusMessages();
     }
+      setRoundWinner(lastMessage.round_winner);
+    };
+
 
   },[publicMessages]);
 
@@ -127,7 +141,7 @@ function PlayGround() {
     if (cardSelected !== -1){
       const messageToServer = setMessageToServer()
       console.log(messageToServer)
-      send: sendPlayersActions(messageToServer)
+      send: sendPlayersStatus(messageToServer)
       setCardSelected(-1)
   }
   }, [cardSelected]);
@@ -136,16 +150,30 @@ function PlayGround() {
     if (optionSelected !== null && betSelected.length){
     const messageToServer = setMessageToServer()
     console.log(messageToServer)
-    send: sendPlayersActions(messageToServer);
+    send: sendPlayersStatus(messageToServer);
     setBetSelected(''),
     setOptionSelected(null);
   }
  }, [betSelected]);
 
+
+ useEffect(() => {
+  if (winnerId != -1) {
+    closePlayerStatusSocket();
+    closePublicMessageSocket();
+  }
+ }, [winnerId])
+
   return (
     <main className="min-h-screen flex flex-col bg-[var(--color-primary)] text-white p-4">
       {/* MODAL */}
 
+      {roundWinner !== -1 && (
+        <DealingCardsModal/>
+      )}
+      {winnerId !== -1 && (
+        <WinnerLooserModal hasWinned={winnerId === id}/>
+      )}
       { playerOptions != null && optionSelected != null &&
       playerOptions[optionSelected]?.length && 
       typeof playerOptions[optionSelected] === 'object' && openModal && 
@@ -188,7 +216,10 @@ function PlayGround() {
               }
               }
               key={i}
-              disabled={disableButton(option)} 
+              disabled={
+                !isPlayerTurn || !!playerOptions &&  (!playerOptions[option]?.length ||
+                (option === "Truco" && !hasQuiero)
+                  )} 
               className={`disabled:bg-gray-400 ${option === "Mazo" ? "bg-red-600": "bg-blue-600"} py-5 rounded-xl text-xl font-extrabold shadow-lg active:scale-95 transition`}
               >
             {option}

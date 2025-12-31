@@ -13,8 +13,8 @@ export function useWebSocket(url: string): useWebSockeInterface {
         const ws = new WebSocket(url);
         wsRef.current = ws;
 
-        ws.onopen = () => setConnected(true);
-        ws.onclose = () => setConnected(false);
+        ws.onopen = () => console.log("OPPENNING WEB-SOCKET");
+        ws.onclose = () => console.log("CLOSSING WEB-SOCKET");
 
         ws.onmessage = (event) => {
         const parsed = JSON.parse(event.data);
@@ -28,7 +28,10 @@ export function useWebSocket(url: string): useWebSockeInterface {
         wsRef.current.send(JSON.stringify(data));
     };
 
+    const closeSocket = () => wsRef.current?.close();
+
     const clearMessages = () => setMessages(prev => []);
-    return { connected, messages, clearMessages, send };
+    
+    return { connected, messages, clearMessages, send, closeSocket };
 
 }
