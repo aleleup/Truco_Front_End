@@ -5,7 +5,7 @@ type CardType = "sword" | "wood" | "cup" | "gold"
 
 
 export interface PlayersAction {
-    bet: Array<String>,
+    bet: Array<string>,
     card_index: number
 }
 interface AuthorizationToPlay {

@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(true);
-  const trucoPhases:Array<String>  = [
+  const trucoPhases:Array<string>  = [
     "Una vez una paloma ofreció darme su nido,y yo creyendo una bromano le eché la Falta envido.", 
     "Los gauchos del General peleaba con trabuco, yo peleo con tres cartas porque estoy jugando al Truco.", 
     "Vamos medio derrotados pero no le temo al cuco; pues cantan los colorados Falta envido y truco."];
-  const [actualPhase, setActualPhase] = useState<String>("")
+  const [actualPhase, setActualPhase] = useState<string>("")
   const [i, setI] = useState<number>(0)
 
   useEffect(() => {

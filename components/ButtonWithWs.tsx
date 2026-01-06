@@ -8,7 +8,7 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import { useIdStore } from '@/hooks/useIdStore';
 
 export const ButtonWithWs = ({isButtonEnabled, setIsButtonEnabled}: buttonWithWsProps) => {
-    const [titleButton, setTitleButton] = useState<String>("Empezar Juego");
+    const [titleButton, setTitleButton] = useState<string>("Empezar Juego");
     const [url, setUrl] = useState<string>('');
     const {messages} = useWebSocket(url)
 

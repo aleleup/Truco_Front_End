@@ -134,7 +134,7 @@ function PlayGround() {
     }
   }
 
-  // const optionSelectedIsAnArrayOfStrings = (): boolean => playerOptions != null && optionSelected != null && playerOptions[optionSelected]?.length && typeof playerOptions[optionSelected] === 'object'
+  // const optionSelectedIsAnArrayOfstrings = (): boolean => playerOptions != null && optionSelected != null && playerOptions[optionSelected]?.length && typeof playerOptions[optionSelected] === 'object'
     
   // SEND PLAYERS PLAY
   useEffect(() => {
