@@ -19,11 +19,20 @@ export interface CardsOnTheDeskProps {
 export interface MessageLoggerProps {
   ownLastMessage: string,
   ownPoints: number,
+  ownBetCallsAmount: number,
 
   opponentLastMessage: string,
   opponentPoints: number,
+  opponentBetCallsAmount: number
 }
 
 export interface WinnerLooserModalProps{
-  hasWinned: boolean;
+  hasWon: boolean;
 };
+
+export interface EnvidoModalProps {
+  hasWon: boolean,
+  setEnvidoWinnerId: (n: number) => void,
+  playersEnvido: number,
+  oponentsEnvido: number
+}

@@ -19,7 +19,6 @@ interface PlayerStatus{
     points: number,
     cards: Array<Card>,
     options: PlayerOptions,
-    envido: number,
     is_player_turn: boolean,
     can_throw_cards: boolean,
     has_quiero: boolean
@@ -43,13 +42,16 @@ interface GeneralPublicData {
     winner_id: number,
     players_public_data: Array<PublicPlayersData>,
     round: number,
-    round_winner: number
+    round_winner: number,
+    envido_winner: number
 }
 
 export interface PublicPlayersData {
     last_bet: string,
     cards_on_desk: Array<Card>,
-    points: number
+    points: number,
+    envido: number,
+    bet_calls_amount: number,
 }
 
 

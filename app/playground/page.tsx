@@ -9,6 +9,7 @@ import { MessageLogger } from './components/MessageLogger';
 import { CardsOnTheDesk } from './components/CardsOnTheDesk';
 import WinnerLooserModal from './components/WinnerLooserModal';
 import DealingCardsModal from './components/DealingCardsModal';
+import { EnvidoModal } from './components/EnvidoModal';
 
 function PlayGround() {
   const { id } = useIdStore();
@@ -33,7 +34,8 @@ function PlayGround() {
   const [hasQuiero, setHasQuiero] = useState<boolean>(true);
   //PUBLIC VIEW STATES
   const [publicViewUrl, setPublicViewUrl] = useState<string>('');
-  const [winnerId, setWinnerId] = useState<number>(-1)
+  const [winnerId, setWinnerId] = useState<number>(-1);
+  const [envidoWinnerId, setEnvidoWinnerId] = useState<number>(-1);
   const {
     messages: publicMessages, 
     clearMessages: clearPublicMessages,
@@ -45,7 +47,6 @@ function PlayGround() {
   const [roundWinner, setRoundWinner] = useState<number>(-1);
   //WEB-SOCKET playersStatusMessages MANAGEMENT:
   useEffect(() => {
-    console.log("DEBBUG", playersStatusMessages)
     if (!playersStatusMessages.length) return;    
     const lastMessage = playersStatusMessages.at(-1)!;
     console.log("playersStatusMessages", lastMessage)
@@ -76,8 +77,10 @@ function PlayGround() {
 
   //WEB-SOCKET publicMessages MANAGEMENT:
   useEffect(() => {
+    
     if (!publicMessages.length) return;    
     const lastMessage = publicMessages.at(-1)!;
+    console.log("DEBBUG", lastMessage)
 
     if ('round' in lastMessage){
       if (lastMessage.round > currentRound){
@@ -104,7 +107,9 @@ function PlayGround() {
       setRoundWinner(lastMessage.round_winner);
     };
 
-
+    if ('envido_winner' in lastMessage) { //
+      setEnvidoWinnerId(lastMessage.envido_winner);
+    }
   },[publicMessages]);
 
   useEffect(() => {
@@ -167,12 +172,21 @@ function PlayGround() {
   return (
     <main className="min-h-screen flex flex-col bg-[var(--color-primary)] text-white p-4">
       {/* MODAL */}
-
+      {envidoWinnerId !== -1 && (
+        <EnvidoModal 
+        hasWon={envidoWinnerId === id} 
+        setEnvidoWinnerId={setEnvidoWinnerId} 
+        playersEnvido={ownPublicData?.envido || 0}
+        oponentsEnvido={opponentPublicData?.envido || 0}/>
+      )}
       {roundWinner !== -1 && (
         <DealingCardsModal/>
       )}
       {winnerId !== -1 && (
-        <WinnerLooserModal hasWinned={winnerId === id}/>
+        <WinnerLooserModal hasWon={winnerId === id}/>
+      )}
+      {winnerId !== -1 && (
+        <WinnerLooserModal hasWon={winnerId === id}/>
       )}
       { playerOptions != null && optionSelected != null &&
       playerOptions[optionSelected]?.length && 
@@ -183,9 +197,10 @@ function PlayGround() {
         <MessageLogger 
           ownLastMessage={ownPublicData?.last_bet} 
           ownPoints={ownPublicData?.points}
+          ownBetCallsAmount={ownPublicData?.bet_calls_amount}
           opponentLastMessage={opponentPublicData?.last_bet}
           opponentPoints={opponentPublicData?.points}
-        
+          opponentBetCallsAmount={opponentPublicData?.bet_calls_amount}
         />
        <CardsOnTheDesk ownCards={ownPublicData?.cards_on_desk} opponentCards={opponentPublicData?.cards_on_desk}/>
        </>
