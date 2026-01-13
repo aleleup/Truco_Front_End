@@ -11,6 +11,8 @@ export interface useWebSockeInterface {
 }
 export interface idStoreInterface {
     id: number,
-    setNewId: (newId: number) => void;
+    setNewId: (newId: number) => void,
+    session: number,
+    setNewSession: (newSesion: number) => void
 }
 

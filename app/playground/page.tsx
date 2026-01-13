@@ -12,7 +12,7 @@ import DealingCardsModal from './components/DealingCardsModal';
 import { EnvidoModal } from './components/EnvidoModal';
 
 function PlayGround() {
-  const { id } = useIdStore();
+  const { id, session } = useIdStore();
   
   //PLAYERS Status STATES
   const [playersActionUrl, setPlayersActionUrl] = useState<string>('');
@@ -111,8 +111,8 @@ function PlayGround() {
 
   useEffect(() => {
       if (id === -1) return;
-      setPublicViewUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/public-view/${id}`)
-      setPlayersActionUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/playground/${id}`)
+      setPublicViewUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/public-view/${session}/${id}`)
+      setPlayersActionUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/playground/${session}/${id}`)
   }, [id]);
 
   function typedKeys<T extends object>(obj: T): (keyof T)[] {

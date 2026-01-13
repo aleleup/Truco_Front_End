@@ -2,7 +2,7 @@ import { Card } from "./gameDataFlowInterfaces"
 
 export interface buttonWithWsProps {
     isButtonEnabled: boolean,
-    setIsButtonEnabled: (b: boolean) => void
+    setIsButtonEnabled: (b: boolean) => void,
     };
 export interface ActionModalProps {
   buttonsArray: string[],

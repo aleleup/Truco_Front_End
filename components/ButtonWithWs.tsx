@@ -13,12 +13,14 @@ export const ButtonWithWs = ({isButtonEnabled, setIsButtonEnabled}: buttonWithWs
     const {messages} = useWebSocket(url)
 
     const router = useRouter();
-    const {id, setNewId} = useIdStore();
+    const {id, setNewId, session} = useIdStore();
     
-    const connectToWs = () => {
+    const connectToWs = async () => {
         setTitleButton("Conectandose...")
-        setIsButtonEnabled(false)
-        setUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/enter-lobby/${Math.random()}`)
+        setIsButtonEnabled(false);
+        const newId = Math.random()
+        await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/store-session-id/${session}`)
+        setUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/enter-lobby/${session}/${newId}`)
     }
 
     useEffect(() => {
