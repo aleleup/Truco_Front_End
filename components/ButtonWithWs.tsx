@@ -38,7 +38,6 @@ export const ButtonWithWs = ({isButtonEnabled, setIsButtonEnabled}: buttonWithWs
     })
     }, [messages]);
 
-    useEffect(() =>{ console.log(id) },[id])
     return (
         <button
             onClick={connectToWs}

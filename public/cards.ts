@@ -426,4 +426,3 @@ export const cardAsciiStorage: Record<CardKey, string> = {
 `,
 }
 
-// Object.values(cardAsciiStorage).forEach(card => console.log(cardAsciiStorage));

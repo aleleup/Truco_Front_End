@@ -49,7 +49,6 @@ function PlayGround() {
   useEffect(() => {
     if (!playersStatusMessages.length) return;    
     const lastMessage = playersStatusMessages.at(-1)!;
-    console.log("playersStatusMessages", lastMessage)
 
     if ('cards' in lastMessage){
       setPlayersCards(lastMessage.cards.map(card => card.name));
@@ -80,7 +79,6 @@ function PlayGround() {
     
     if (!publicMessages.length) return;    
     const lastMessage = publicMessages.at(-1)!;
-    console.log("DEBBUG", lastMessage)
 
     if ('round' in lastMessage){
       if (lastMessage.round > currentRound){
@@ -94,7 +92,6 @@ function PlayGround() {
       setWinnerId(lastMessage.winner_id);
     }
     if ('players_public_data' in lastMessage){
-      console.log("setOwnPublicData, setOpponentPublicData")
       setOwnPublicData(lastMessage.players_public_data[id])
       setOpponentPublicData(lastMessage.players_public_data[(id + 1) % 2 ])
     }
@@ -145,7 +142,6 @@ function PlayGround() {
   useEffect(() => {
     if (cardSelected !== -1){
       const messageToServer = setMessageToServer()
-      console.log(messageToServer)
       send: sendPlayersStatus(messageToServer)
       setCardSelected(-1)
   }
@@ -154,7 +150,6 @@ function PlayGround() {
   useEffect(() => {  
     if (optionSelected !== null && betSelected.length){
     const messageToServer = setMessageToServer()
-    console.log(messageToServer)
     send: sendPlayersStatus(messageToServer);
     setBetSelected(''),
     setOptionSelected(null);
