@@ -19,7 +19,9 @@ export const ButtonWithWs = ({isButtonEnabled, setIsButtonEnabled}: buttonWithWs
         setTitleButton("Conectandose...")
         setIsButtonEnabled(false);
         const newId = Math.random()
-        await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/store-session-id/${session}`)
+        const fetchSessionCreator = await fetch(`${process.env.NEXT_PUBLIC_ENDPOINT}/store-session-id/${session}`);
+        // console.log(fetchSessionCreator)
+        if (!fetchSessionCreator?.ok) throw new Error ("Felicidades!! tu browser no soporta la mierda insegura de NEXT JS.")
         setUrl(`${process.env.NEXT_PUBLIC_ENDPOINT}/enter-lobby/${session}/${newId}`)
     }
 
